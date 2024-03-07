@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>theWidjiWay</title>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<link rel="exhibit-extension" type="text/javascript" href="src/extensions/map/map-extension.js?service=google&bundle=false" />
+		<link rel="exhibit-extension" type="text/javascript" href="src/extensions/time/time-extension.js?bundle=false" />
+		<script src="src/exhibit-api.js?bundle=false"></script>
+		<script src="resources/main.js" type="text/javascript"></script>
+		<link href="resources/main.css" type="text/css" rel="stylesheet" />
+		<link rel="exhibit/data" 
+		type="application/jsonp"
+		href="https://spreadsheets.google.com/feeds/list/0AuZhbzFqO0ZidFBCSkQ1Q0w3T1RSblZTR0ZmWjFNQmc/od6/public/basic?alt=json-in-script"
+		ex:converter="googleSpreadsheets" />
+	</head>
+	<body>
+		<div id="guts" style="display:none;">
+			<!-- Define collection -->
+			<div ex:role="exhibit-collection" ex:itemTypes="trip" id="myEvt"></div>
+			<!-- Coordinator definition to tie map and timeline together -->
+			<div ex:role="coordinator" id="coordinator-a"></div>
+			<!-- Define colors for each trip type -->
+			<div ex:role="coder" ex:coderClass="Color" id="trip-colors">
+				<span ex:color="#cc0000">Voyageur boys</span>
+				<span ex:color="#0000cc">Voyageur girls</span>
+				<span ex:color="#660099">Voyageur coed</span>
+				<span ex:color="#ff3300">Mountaineer boys</span>
+				<span ex:color="#ffff00">Mountaineer girls</span>
+				<span ex:color="#ff00ff">Mountaineer coed</span>
+				<span ex:color="#006600">Hudson Bay boys</span>
+				<span ex:color="#000000">Hudson Bay girls</span>
+				<span ex:color="#999999">Hudson Bay coed</span>
+			</div><!--end coder-->
+			<!-- Formatting of Map View bubbles -->
+			<div class="map-lens" ex:role="lens">
+				<div><a ex:href-subcontent="groups/{{.tripID}}.html"><span ex:content="concat(.year,' ',.category,' - ',.staff)"></span></a></div>
+				<div>Campers: <span ex:content=".campers"></span></div>
+				<div>- - - - -</div>
+				<div>Days: <span ex:content=".days"></span> | Distance: <span ex:content=".distance"></span> miles</div>
+				<div>Description: <span ex:content=".description"></span></div>
+			</div><!--end lens-->
+		</div>
+		<div class="container">
+			<div class="header">
+				<div style="float:left;padding-top:-10px;">
+					<h1 title="Where have we been?">The Widji Way</h1>
+				</div>
+			<div class="colmask">
+	            <div class="colleft">
+					<div>
+						<div class="col1">
+							<!-- Exhibit Map View -->
+							<div
+								ex:role="exhibit-view"
+								ex:viewClass="Map"
+								ex:viewLabel="Map"
+								ex:collectionID="myEvt"
+								ex:mapHeight="430"
+								ex:size="large"
+								ex:center="64.1,-115.6"
+								ex:zoom="3"
+								ex:latlngOrder="lnglat"
+								ex:latlngPairSeparator="|"
+								ex:latlng=".start"
+								ex:polyline=".route"
+								ex:borderWidth="2"
+								ex:borderOpacity="1"
+								ex:selectCoordinator="coordinator-a"
+								ex:colorCoder="trip-colors"
+								ex:colorKey="concat(.category,' ',.gender)"
+								ex:shapeheight="10"
+								ex:shapewidth="10"
+								ex:showHeader="true"
+								ex:showSummary="true"
+								ex:showFooter="true"
+								ex:overviewControl="true"
+								id="mapview"
+							></div><!--end map-->
+							<!-- Timeline view -->
+							<div style="font-size:14px;"
+								ex:role="view"
+								ex:viewClass="Timeline"
+								ex:collectionID="myEvt"
+								ex:start=".year"
+								ex:eventLabel="concat(.year,' ',.category,' ',.staff)"
+								ex:selectCoordinator="coordinator-a"
+								ex:topBandIntervalPixels="300"
+								ex:showHeader="false"
+								ex:showFooter="false"
+								ex:showSummary="false"
+							></div><!--end timeline-->
+							<div
+								ex:role="exhibit-view"
+								ex:viewClass="Exhibit.Tabular"
+								ex:collectionID="myEvt"
+								ex:formats="list{separator:','}"
+								ex:columns=".year,.staff,.campers, .description, .days, .distance"
+								ex:sortAscending="false"
+								ex:columnLabels="Year,Counselor,Campers,Description,Days on trail,Miles"
+								ex:columnFormats="number,text,list,text,number,number"
+								ex:border="0"
+								ex:showAll="true"
+								ex:showToolbox="false"
+							>
+								<table>
+									<tr>
+										<td style=""><span ex:content=".year"></span></td>
+										<td style=""><a ex:content=".staff" ex:href-subcontent="groups/{{.tripID}}.html"></a></td>
+										<td style=""><span ex:content=".campers"></span></td>
+										<td style=""><span ex:content=".description"></span></td>
+										<td style=""><span ex:content=".days"></span></td>
+										<td style=""><span ex:content=".distance"></span></td>
+									</tr>
+								</table> 							
+							</div><!--end table-->
+						</div><!--end col1-->
+					</div>
+
+	                <div class="col2">
+						<!-- Exhibit Facets -->
+							<div
+								ex:role="facet"
+								ex:facetClass="TextSearch"
+								ex:collectionID="myEvt"
+								ex:facetLabel="Search"
+							></div>
+							<hr />
+							<div
+								ex:role="facet" 
+								ex:facetLabel="Trip" 
+								ex:collectionID="myEvt"
+								ex:fixedOrder="Voyageur;Mountaineer;Hudson Bay"
+								ex:expression=".category" 
+								ex:scroll="false"
+								ex:showMissing="false"
+							></div><!--end facet-->
+	                </div><!--end col2-->
+	            </div><!--end colleft-->
+	        </div><!--end colmask-->
+		    <div class="footer">
+		    </div><!--end footer-->
+		</div><!--end bottom-->
+	</body>
+</html>
